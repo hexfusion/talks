@@ -1,0 +1,142 @@
+{
+  "version": 1,
+  "width": 80,
+  "height": 24,
+  "duration": 13.875801,
+  "command": null,
+  "title": null,
+  "env": {
+    "TERM": "xterm-256color",
+    "SHELL": "/bin/bash"
+  },
+  "stdout": [
+    [
+      0.236571,
+      "\u001b]0;samb@ob1:~/d/dev_modules/perl/perl-net-etcd\u0007"
+    ],
+    [
+      0.000154,
+      "[samb@ob1 perl-net-etcd]$ "
+    ],
+    [
+      1.80918,
+      "v"
+    ],
+    [
+      0.079718,
+      "i"
+    ],
+    [
+      0.104263,
+      " "
+    ],
+    [
+      0.280001,
+      "./examples/watch.pl"
+    ],
+    [
+      0.607978,
+      "\r\n"
+    ],
+    [
+      0.043503,
+      "\u001b[?2004h\u001b[?1049h\u001b[?1h\u001b=\u001b[?2004h"
+    ],
+    [
+      0.000503,
+      "\u001b[1;24r\u001b[?12;25h\u001b[?12l\u001b[?25h\u001b[27m\u001b[23m\u001b[m\u001b[H\u001b[2J\u001b[?25l\u001b[24;1H\"./examples/watch.pl\""
+    ],
+    [
+      3.8e-05,
+      " 27L, 550C"
+    ],
+    [
+      0.003437,
+      "\u001b[>c\u001b[2;1H▽\u001b[6n\u001b[2;1H  \u001b[1;1H"
+    ],
+    [
+      0.00245,
+      "\u001b[1;1H\u001b[38;5;130m  4 use warnings\u001b[m;\r\n\u001b[38;5;130m  5 use \u001b[mNet::Etcd;\r\n\u001b[38;5;130m  6 use \u001b[mData::Dumper;\r\n\u001b[38;5;130m  7 my\u001b[m (\u001b[36m$host\u001b[m, \u001b[36m$port\u001b[m);\r\n\u001b[38;5;130m  8 \r\n  9 if\u001b[m ( \u001b[36m$ENV{\u001b[m\u001b[31mETCD_TEST_HOST\u001b[m\u001b[36m}\u001b[m \u001b[38;5;130mand\u001b[m \u001b[36m$ENV{\u001b[m\u001b[31mETCD_TEST_PORT\u001b[m\u001b[36m}\u001b[m) {\r\n\u001b[38;5;130m 10 \u001b[m    \u001b[36m$host\u001b[m = \u001b[36m$ENV{\u001b[m\u001b[31mETCD_TEST_HOST\u001b[m\u001b[36m}\u001b[m;\r\n\u001b[38;5;130m 11 \u001b[m    \u001b[36m$port\u001b[m = \u001b[36m$ENV{\u001b[m\u001b[31mETCD_TEST_PORT\u001b[m\u001b[36m}\u001b[m;\r\n\u001b[38;5;130m 12 \u001b[m}\r\n\u001b[38;5;130m 13 \r\n 14 my\u001b[m (\u001b[36m$watch\u001b[m,\u001b[36m$key\u001b[m);\r\n\u001b[38;5;130m 15 my\u001b[m \u001b[36m$etcd\u001b[m = Net::Etcd->new( { \u001b[31mhost\u001b[m => \u001b[36m$host\u001b[m, \u001b[31mport\u001b[m => \u001b[36m$port\u001b[m } );\r\n\u001b[38;5;130m 16 \r\n 17 \u001b[m\u001b[34m# create watch with callback and store events\u001b[m\r\n\u001b[38;5;130m 18 \u001b[m\u001b[36m$watch\u001b[m = \u001b[36m$etcd->watch\u001b[m( { \u001b[31mkey\u001b[m => \u001b[31m'foo'\u001b[m}, \u001b[38;5;130msub \u001b[m{\r\n\u001b[38;5;130m 19 \u001b[m    \u001b[38;5;130mmy\u001b[m (\u001b[36m$result\u001b[m) =  \u001b[36m@_\u001b[m;\r\n\u001b[38;5;130m 20 \u001b[m    \u001b[38;5;130mprint\u001b[m \u001b[36mSTDERR\u001b[m Dumper(\u001b[36m$result\u001b[m);\r\n\u001b"
+    ],
+    [
+      1.2e-05,
+      "[38;5;130m 21 \u001b[m})->create;\r\n\u001b[38;5;130m 22 \r\n 23 \u001b[m\u001b[36m$etcd->put\u001b[m({ \u001b[31mkey\u001b[m => \u001b[31m'foo'\u001b[m, \u001b[31mvalue\u001b[m => \u001b[31m'bar'\u001b[m });\r\n\u001b[38;5;130m 24 \r\n 25 \u001b[m\u001b[36m$etcd->range\u001b[m({ \u001b[31mkey\u001b[m => \u001b[31m'foo'\u001b[m });\r\n\u001b[38;5;130m 26 \u001b[?12l\u001b[?25h"
+    ],
+    [
+      0.013313,
+      "\u001bP+q436f\u001b\\\u001bP+q6b75\u001b\\\u001bP+q6b64\u001b\\\u001bP+q6b72\u001b\\\u001bP+q6b6c\u001b\\\u001bP+q2332\u001b\\\u001bP+q2334\u001b\\\u001bP+q2569\u001b\\\u001bP+q2a37\u001b\\\u001bP+q6b31\u001b\\"
+    ],
+    [
+      1.368664,
+      "\u001b[?25l\u001b[1;23r\u001b[m\u001b[23;1H\r\n\u001b[1;24r\u001b[23;1H\u001b[38;5;130m 27 \u001b[m\u001b[31m1\u001b[m;\u001b[24;1H\u001b[K\u001b[23;5H\u001b[?12l\u001b[?25h"
+    ],
+    [
+      0.135833,
+      "\u0007"
+    ],
+    [
+      0.367992,
+      "\u0007"
+    ],
+    [
+      5.07192,
+      "\u0007\u001b[?25l\r\n:\u001b[?2004h"
+    ],
+    [
+      3.5e-05,
+      "\u001b[?12l\u001b[?25h"
+    ],
+    [
+      0.127998,
+      "q"
+    ],
+    [
+      3.4e-05,
+      "\u001b[?25l\u001b[?12l\u001b[?25h"
+    ],
+    [
+      0.119911,
+      "\r"
+    ],
+    [
+      0.000621,
+      "\u001b[?25l\u001b[?2004l"
+    ],
+    [
+      1e-05,
+      "\u001b[24;1H\u001b[K\u001b[24;1H\u001b[?2004l\u001b[?1l\u001b>\u001b[?12l\u001b[?25h\u001b[?1049l"
+    ],
+    [
+      0.000707,
+      "\u001b]0;samb@ob1:~/d/dev_modules/perl/perl-net-etcd\u0007"
+    ],
+    [
+      4.9e-05,
+      "[samb@ob1 perl-net-etcd]$ "
+    ],
+    [
+      2.966801,
+      "./examples/watch.pl"
+    ],
+    [
+      0.384011,
+      "\r\n"
+    ],
+    [
+      0.14059,
+      "$VAR1 = '{\"result\":{\"header\":{\"cluster_id\":\"14841639068965178418\",\"member_id\":\"10276657743932975437\",\"revision\":\"128\",\"raft_term\":\"4\"},\"created\":true}}\r\n';\r\n"
+    ],
+    [
+      0.00264,
+      "$VAR1 = '{\"result\":{\"header\":{\"cluster_id\":\"14841639068965178418\",\"member_id\":\"10276657743932975437\",\"revision\":\"129\",\"raft_term\":\"4\"},\"events\":[{\"kv\":{\"key\":\"Zm9v\",\"create_revision\":\"5\",\"mod_revision\":\"129\",\"version\":\"42\",\"value\":\"YmFy\"}}]}}\r\n';\r\n"
+    ],
+    [
+      0.005909,
+      "\u001b]0;samb@ob1:~/d/dev_modules/perl/perl-net-etcd\u0007"
+    ],
+    [
+      5.2e-05,
+      "[samb@ob1 perl-net-etcd]$ "
+    ]
+  ]
+}
