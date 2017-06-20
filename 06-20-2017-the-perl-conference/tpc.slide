@@ -30,10 +30,8 @@ www.hexfusion.com
 
 * Agenda
 
-
-
-- What is etcd and what is it good for
 - gRPC and protobufs
+- What is etcd and what is it good for
 - grpc-gateway
 - Net::Etcd
 - What is Dancer
@@ -59,6 +57,15 @@ www.hexfusion.com
 
 .background img/background_endpoint_grey.png
 ################################################
+* RPC
+
+- Mechanism for making a procedure call (function) in another application of across the network.
+- Passes parameters and expects certain reults.
+- Data is typed.
+
+.background img/background_endpoint_grey.png
+################################################
+
 
 * gRPC
 
@@ -119,13 +126,37 @@ protoc --go_out=. *.proto
 * etcd
 
 - Distributed key value store
-- Fault tolerance leader election
+- Fault toleranct leader election
+- Store data across a cluster of machines
 - Backbone for kubernetes
 : Stores all of the container meta data.
+: each node had a data directory
 
 .background img/background_etcd_grey.png
 ################################################
 
+* etcd best use
+
+- storing small amounts of data, JSON, YAML, text
+- max storage 8GB
+
+: all data needs to be replicated across all nodes
+
+.background img/background_etcd_grey.png
+################################################
+* etcd v2
+
+What they learned.
+
+- directory style promotes poor usage
+- empty directories were wasteful
+- JSON although fast by most standards can lead to chatty transactions on the wire.
+
+	# create dir
+	etcdctl mkdir /backups
+	
+.background img/background_etcd_grey.png
+################################################
 * etcd v3
 
 Features
@@ -137,58 +168,6 @@ Goals
 - Efficiency/speed
 - Scaling
 
-.background img/background_etcd_grey.png
-################################################
-
-* etcd v3
-
-Issues
-- v2 had robust JSON REST API
-- Not all languages have stable gRPC/protobuf support.
-
-: cough perl
-: v3 by it's design had focus on grpc.
-
-.background img/background_etcd_grey.png
-###############################################
-
-* etcd v3
-
-Solution grpc-gateway
-
-- protoc plugin
-- Rest API based on proto files using Swagger definitions.
-
-.image img/thank_you_yuki_sonada.png _ 1000
-
-.background img/background_etcd_grey.png
-################################################
-
-* etcd v3 grpc-gateway
-
-: reads gRPC service definition
-: generates a reverse-proxy server
-: translates a RESTful JSON API into gRPC.
-
-.image img/grpc-gateway.png _ 1000
-
-.caption Credit: [[https://github.com/grpc-ecosystem/grpc-gateway][github.com/grpc-ecosystem/grpc-gateway]]
-
-.background img/background_etcd_grey.png
-################################################
-
-* Experiment
-
-- Net::Etcd 
-
-.image img/doc.jpg _ 1000
-
-.background img/background_etcd_grey.png
-################################################
-
-* Net::Etcd
-
-.image img/etcd.png _ 1000
 .background img/background_etcd_grey.png
 
 ################################################
@@ -209,7 +188,7 @@ Solution grpc-gateway
 
 ################################################
 
-* Scaling
+* CPU / Scaling
 
 .image img/2017Q2-01-write-1M-cpu-client-scaling.png _ 1000
 
@@ -236,14 +215,68 @@ Solution grpc-gateway
 
 ################################################
 
+* etcd v3
+
+Issues
+- v2 had robust JSON REST API
+- Not all languages have stable gRPC/protobuf support.
+
+: cough perl
+: v3 by it's design had focus on grpc.
+
+.background img/background_etcd_grey.png
+###############################################
+
+* etcd v3
+
+Solution grpc-gateway
+
+- protoc plugin
+- Rest API based on proto files.
+- Reverse proxy accepts JSON.
+- Converts to gRPC.
+- Yuki Yugui Sonoda (yugui)
+
+.caption Shout out: [[https://github.com/yugui][github.com/yugui]]
+
+.background img/background_etcd_grey.png
+################################################
+
+* etcd v3 grpc-gateway
+
+: reads gRPC service definition
+: generates a reverse-proxy server
+: translates a RESTful JSON API into gRPC.
+
+.image img/grpc-gateway.png _ 1000
+
+.caption Credit: [[https://github.com/grpc-ecosystem/grpc-gateway][github.com/grpc-ecosystem/grpc-gateway]]
+
+.background img/background_etcd_grey.png
+################################################
+
+* Experiment Net::Etcd 
+
+.image img/doc.jpg _ 1000
+
+.background img/background_etcd_grey.png
+################################################
+
+* Net::Etcd
+
+.image img/etcd.png _ 1000
+.background img/background_etcd_grey.png
+
+################################################
+
 * Net::Etcd
 
 Feature walk through
 
+- Put/Range
 - Lease
 - Watch
 - Txn
-- Put/Range
 - Users/Roles (ACL)
 - Authentication
 - Maintenance
@@ -251,9 +284,29 @@ Feature walk through
 .background img/background_etcd_grey.png
 ################################################
 
+* Net::Etcd
+
+KV Put/Range
+
+	# put
+	$etcd->put( { key => 'foo1', value => 'bar' } );
+
+	# range/get
+	$key = $etcd->range( { key => 'foo1' } )->key_value;
+
+	# delete
+	$etcd->range( { key => 'foo1' } )->delete;
+
+.html html/kv.html
+
+.background img/background_etcd_grey.png
+
+################################################
+
 * etcd Lease
 
-A lease will expires if the server does not receive a keepalive within a given time to live (TTL) period. All keys attached to the lease will be expired and deleted if the lease expires.
+A lease will expires if the server does not receive a keepalive within a given time to live (TTL) period.
+- If the lease expires all keys are deleted
 
 .background img/background_etcd_grey.png
 ################################################
@@ -270,19 +323,7 @@ Use cases
 
 : etcd and k8 would use this to intialize leader election
 .background img/background_etcd_grey.png
-#################################################
 
-* Lease: Leader election
-Show picture example of election
-
-.background img/background_etcd_grey.png
-
-###############################################
-
-* Lease: Aliveness testing
-Show picture example of aliveness
-
-.background img/background_etcd_grey.png
 ################################################
 
 * Lease Examples
@@ -315,10 +356,11 @@ Show picture example of aliveness
 
 * Watch
 
-Watch watches for events happening or that have happened. Both input and output are streams; the input stream is for creating and canceling watchers and the output stream sends events.
+Watch watches for events happening or that have happened.
 
 _Challenges_
-- streaming, AnyEvent::HTML
+- Input and outputs are streams
+- AnyEvent::HTML
 
 .background img/background_etcd_grey.png
 ################################################
@@ -334,8 +376,6 @@ _Challenges_
 	# put key
 	$etcd->put({ key => 'foo', value => 'bar' });
 	
-	# get/range key
-	$etcd->range({ key => 'foo' })
 
 .html html/watch.html
 .background img/background_etcd_grey.png
@@ -397,40 +437,17 @@ Txn processes multiple requests in a single transaction.
 .html html/txn.html
 .background img/background_etcd_grey.png
 
-################################################
-* Auth
 
-- Issues
-- Swagger
-: a way to define the strucutre of your API with JSON or YAML
-- grpc-gateway
-- solution
+################################################
+* Auth Issues
+
+: Authentication for grpc-gateway takes place by passing header.
+- Proto files do not support authentication via header
+- Solution schwag https://github.com/hexfusion/schwag
+- Now part of etcd!
 
 .background img/background_etcd_grey.png
 
-################################################
-
-
-* Auth
-
-- Issues
-- Swagger
-: a way to define the strucutre of your API with JSON or YAML
-- grpc-gateway
-- solution
-
-.background img/background_etcd_grey.png
-
-################################################
-
-* Auth
-
-Swagger
-: a way to define the strucutre of your API with JSON or YAML
-- grpc-gateway
-- solution
-
-.background img/background_etcd_grey.png
 
 ################################################
 * Auth
@@ -443,14 +460,6 @@ Not yet released 3.2.0+git
 
 .background img/background_etcd_grey.png
 
-################################################
-
-* Auth Issues
-
-:Authentication for grpc-gateway takes place by passing header.
-- Proto files do not support authentication via header
-
-.background img/background_etcd_grey.png
 
 ################################################
 
@@ -492,38 +501,67 @@ Example:
 
 ################################################
 
+* Dancer
+
+- Perl framework
+- Lightweight
+- PSGI support
+- Nice plugin architecture
+
+
+.background img/background_endpoint_grey.png
+################################################
+
 * Dancer::Plugin::Etcd
 
 Easy access to etcd api within Dancer.
 
 Possible use cases
 - Custom development ENV management.
-: Maybe kubernetes is managing deployment but Dancer provides and interface for developers.
 - Custom automated builds.
+
+: Maybe kubernetes is managing deployment but Dancer provides and interface for developers.
 : Think dancer based jenkins like system.
 
-.background img/home_ep_logo.png
+
+.background img/background_endpoint_grey.png
 ################################################
 
 * Dancer::Plugin::Etcd
 
 Custom Build/Testing Application
-- Java.. really?
+- Jenkins, Java.. really?
 - Perl is the king of automation.
-: Jenkins is great but we need it to run a few bash scripts?
-: I ran into issue testing etcd travis is free but I need to ensure drives are SSD.
 
-.background img/home_ep_logo.png
+: Jenkins is great but we need it to run a few bash scripts?
+: testing etcd travis is free I need to ensure drives are SSD.
+
+.background img/background_endpoint_grey.png
 ################################################
 
 * Dancer::Plugin::Etcd
 
 - Config file outlining tasks
-- Some build logic to turn config into actions.
-- Generic Docker base image with a little magic to orchestrate logic and config.
+- Build logic to turn config into actions.
 - Travis?
 
-.background img/home_ep_logo.png
+: Generic Docker base image with a little magic to orchestrate logic and config.
+
+.background img/background_endpoint_grey.png
+################################################
+
+* Dancer::Plugin::Etcd
+
+Usage
+
+	get '/foo/alive' => sub {
+	    $tokens = shift;
+	    $etcd = etcd();
+	    $etcd->put({ key => 'alive', value => 'foo' });
+	    [ ... ]
+	};
+
+.background img/background_endpoint_grey.png
 ################################################
 
 * Dancer::Plugin::Etcd
@@ -544,180 +582,147 @@ Usage
 
 :Uses its own auth details in Dancer config.
 
-.background img/home_ep_logo.png
+.background img/background_endpoint_grey.png
 ################################################
+* Kubernetes
 
+What is it
+
+- Open source
+- Go
+- Automates deployment, scaling and management of containers
+
+: greek for helmsna
+
+.background img/background_kubernetes_grey.png
+################################################
+* Kubernetes
+
+.image img/why_containers.png
+
+.background img/background_kubernetes_grey.png
+
+.caption Credit: [[https://kubernetes.io/docs/concepts/overview/what-is-kubernetes][kubernetes.io/docs]]
+
+################################################
 * Kubernetes
 Install minikube
 
+Dependencies
 - docker-machine: https://github.com/dhiltgen/docker-machine-kvm/releases
 - kvm: https://github.com/dhiltgen/docker-machine-kvm/releases
 
 	minikube start
 
-	# reuse docker deamon
-	eval $(minikube docker-env)
-:great feature is not having to create a local docker hub, store on local docker
-
-	docker ps
+	# create 50G kvm instance with default network.
+	minikube start --disk-size 50g --vm-driver kvm --kvm-network default
 
 	minikube dashboard
 
+.background img/background_kubernetes_grey.png
 ################################################
+* Kubernetes Minikube
 
-* Net::Kubernetes
-
-	$kube = Net::Kubernetes->new(
-	url=>'http://127.0.0.1:8080', username=>'dave', password=>'davespassword');
-	$pod_list = $kube->list_pods();
-	 
-	$nginx_pod = $kube->create_from_file('kubernetes/examples/pod.yaml');
-	 
-	$ns = $kube->get_namespace('default');
-	 
-	$services = $ns->list_services;
-	 
-	$pod = $ns->get_pod('my-pod');
-
-	$pod->delete;
-	 
-	$other_pod = $ns->create_from_file('./my-pod.yaml');
-
-
-################################################
-
-* Net::Kubernetes
-
-Deploy Dancer hello world
-
-- demo 
-
-
-################################################
-
-* etcd + Kubernetes
-
-etcd is *Consistent* + *Partition*tolerant* + *(Highly)*Available*
-
-.image img/etcd-kubernetes.png 500 800
-
-################################################
-
-* Use etcd to store configuration
-
----- REWRITE ME
-
-For small chunks of data
-
-  maxReqBytes = 1.5 * 1024 * 1024  // 1.5MB
-
-  DefaultQuotaBytes = int64(2 * 1024 * 1024 * 1024) // 2GB
-  MaxQuotaBytes = int64(8 * 1024 * 1024 * 1024)     // 8GB
-
-For JSON, YAML, text data...
-
-Not for gigabytes of ISO image, videos files...
-
-##############################################
-
-* Dancer::Plugin::Etcd
-
-shepherd allows round trip storage of your YAML configs using a docker like naming system.
-
-- maintains styling
-- maintains comments
-
-Usage
-
-	# put config and define version
-	shepherd put sam/project:v2
-
-	# get latest config
-	shepherd get sam/project:latest
-
-	# will increment version and set lastest
-	shepherd put
-
-:Uses its own auth details in Dancer config.
-
-
-################################################
-
-* Kubernetes
-Install minikube
-
-- docker-machine: https://github.com/dhiltgen/docker-machine-kvm/releases
-- kvm: https://github.com/dhiltgen/docker-machine-kvm/releases
-
-	minikube start
+Docker
 
 	# reuse docker deamon
 	eval $(minikube docker-env)
-:great feature is not having to create a local docker hub, store on local docker
 
+	# will show all docker containers within kubernetes
 	docker ps
 
-	minikube dashboard
+	# build your docker file
+	docker build -t sam/myapp:v1 .
+
+: for various reasons it is smart to use version numbers vs latest
+
+: no need to setup local dockerhub
+
+.background img/background_kubernetes_grey.png
+################################################
+
+* Net::Kubernetes
+
+	# connection
+	$kube = Net::Kubernetes->new(
+		url=>'http://127.0.0.1:8080',
+		username=>'foo',
+		password=>'baz'
+	);
+
+	# list current pods
+	$pod_list = $kube->list_pods();
+
+
+: Hello world
+
+
+.background img/background_kubernetes_grey.png
 
 ################################################
 
 * Net::Kubernetes
 
-	$kube = Net::Kubernetes->new(
-	url=>'http://127.0.0.1:8080', username=>'dave', password=>'davespassword');
-	$pod_list = $kube->list_pods();
-	 
-	$nginx_pod = $kube->create_from_file('kubernetes/examples/pod.yaml');
-	 
-	$ns = $kube->get_namespace('default');
-	 
+	# dancer service
+	$kube->create_from_file('configs/dancer-service.yaml');
+
+	# dancer-service.yaml
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: dancer
+	  labels:
+		run: dancer
+	spec:
+	  type: ClusterIP
+	  ports:
+	  - port: 3000
+		protocol: TCP 
+		name: plack
+	  externalIPs:
+	  - 123.123.123.123
+	  selector:
+		run: dancer
+	---
+
+
+	# verify
 	$services = $ns->list_services;
 	 
-	$pod = $ns->get_pod('my-pod');
 
-	$pod->delete;
-	 
-	$other_pod = $ns->create_from_file('./my-pod.yaml');
-
-
+.background img/background_kubernetes_grey.png
 ################################################
 
 * Net::Kubernetes
 
-Deploy Dancer hello world
+	# dancer service
+	$kube->create_from_file('configs/dancer-deployment.yaml');
 
-- demo 
+
+	# dancer-deployment.yaml
+	apiVersion: extensions/v1beta1
+	kind: Deployment
+	metadata:
+	  name: dancer
+	  labels:
+		run: dancer
+	spec:
+	  replicas: 1
+	  template:
+		metadata:
+		  labels:
+			run: dancer
+		spec:
+		  containers:
+		  - name: my-app
+			image: sam/myapp:v1
+			ports:
+			- containerPort: 3000
 
 
-################################################
+.background img/background_kubernetes_grey.png
+###############################################
 
-* etcd + Kubernetes
+* Play Time!
 
-etcd is *Consistent* + *Partition*tolerant* + *(Highly)*Available*
-
-.image img/etcd-kubernetes.png 500 800
-
-################################################
-
-* Use etcd to store configuration
-
-For small chunks of data
-
-  maxReqBytes = 1.5 * 1024 * 1024  // 1.5MB
-
-  DefaultQuotaBytes = int64(2 * 1024 * 1024 * 1024) // 2GB
-  MaxQuotaBytes = int64(8 * 1024 * 1024 * 1024)     // 8GB
-
-For JSON, YAML, text data...
-
-Not for gigabytes of ISO image, videos files...
-
-* Raft 101
-
-##############################################
-
-* References
-
-- link to greaph packages
-- link to zookeeper consul data
-
+[[http://play.etcd.io/play][Play Me]]

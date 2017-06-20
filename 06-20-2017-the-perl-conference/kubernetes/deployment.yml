@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dancer
+  labels:
+	run: dancer
+spec:
+  replicas: 1
+  template:
+	metadata:
+	  labels:
+		run: dancer
+	spec:
+	  containers:
+	  - name: my-app
+		image: sam/myapp:v1
+		ports:
+		- containerPort: 3000
+
