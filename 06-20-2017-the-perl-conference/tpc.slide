@@ -7,7 +7,6 @@ Tags: etcd, Net::Etcd, kuberbetes, protobuf, gRPC, grpc-gateway
 Sam Batschelet
 Developer, End Point Corporation
 
-
 ################################################
 
 * About Me
@@ -16,8 +15,8 @@ Sam Batschelet (hexfusion)
 Developer, End Point Corporation
 www.endpoint.com
 
-_Slides_ _and_ _Repos_
-www.hexfusion.com
+_Slides_
+https://github.com/hexfusion/talks
 
 
 .background img/home_ep_logo.png
@@ -160,11 +159,13 @@ What they learned.
 * etcd v3
 
 Features
+
 - Flatten binary key-value space vs directory style
 - RPC API HTTP2 (more efficient than JSON/HTTP)
 - Protobuf v2/3 Defined API
 
 Goals
+
 - Efficiency/speed
 - Scaling
 
@@ -218,6 +219,7 @@ Goals
 * etcd v3
 
 Issues
+
 - v2 had robust JSON REST API
 - Not all languages have stable gRPC/protobuf support.
 
@@ -306,6 +308,7 @@ KV Put/Range
 * etcd Lease
 
 A lease will expires if the server does not receive a keepalive within a given time to live (TTL) period.
+
 - If the lease expires all keys are deleted
 
 .background img/background_etcd_grey.png
@@ -359,6 +362,7 @@ Use cases
 Watch watches for events happening or that have happened.
 
 _Challenges_
+
 - Input and outputs are streams
 - AnyEvent::HTML
 
@@ -517,6 +521,7 @@ Example:
 Easy access to etcd api within Dancer.
 
 Possible use cases
+
 - Custom development ENV management.
 - Custom automated builds.
 
@@ -530,6 +535,7 @@ Possible use cases
 * Dancer::Plugin::Etcd
 
 Custom Build/Testing Application
+
 - Jenkins, Java.. really?
 - Perl is the king of automation.
 
@@ -609,6 +615,7 @@ What is it
 Install minikube
 
 Dependencies
+
 - docker-machine: https://github.com/dhiltgen/docker-machine-kvm/releases
 - kvm: https://github.com/dhiltgen/docker-machine-kvm/releases
 
