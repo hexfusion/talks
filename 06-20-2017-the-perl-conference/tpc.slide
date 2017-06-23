@@ -30,7 +30,7 @@ https://github.com/hexfusion/talks
 * Agenda
 
 - gRPC and protobufs
-- What is etcd and what is it good for
+- What is etcd
 - grpc-gateway
 - Net::Etcd
 - What is Dancer
@@ -128,7 +128,7 @@ protoc --go_out=. *.proto
 * etcd
 
 - Distributed key value store
-- Fault toleranct leader election
+- Fault tolerant leader election
 - Store data across a cluster of machines
 - Backbone for Kubernetes
 : Stores all of the container meta data
@@ -140,7 +140,7 @@ protoc --go_out=. *.proto
 * etcd best use
 
 - Storing small amounts of data, JSON, YAML, text
-- Max storage 8GB
+- Max storage 8GB (+,-)
 
 : all data needs to be replicated across all nodes
 
@@ -165,7 +165,7 @@ Features
 
 - Flatten binary key-value space vs directory style
 - RPC API HTTP2 (more efficient than JSON/HTTP)
-- Protobuf v2/3 Defined API
+- Protobuf v2/3 defined API
 
 Goals
 
@@ -284,7 +284,6 @@ Feature walk through
 - Txn
 - Users/Roles (ACL)
 - Authentication
-- Maintenance
 
 .background img/background_etcd_grey.png
 ################################################
@@ -374,7 +373,7 @@ _Challenges_
 
 * Watch Examples
 
-	# create watch for key foo usinf callback
+	# create watch for key foo using callback
 	$watch = $etcd->watch({ key => 'foo'}, sub {
 	    my ($result) =  @_;
 	    print STDERR Dumper($result);
@@ -524,12 +523,12 @@ Example:
 
 * Dancer::Plugin::Etcd
 
-Easy access to etcd api within Dancer.
+Easy access to etcd REST API within Dancer.
 
 Possible use cases
 
 - Custom development ENV management
-- Custom automated builds
+- Custom automated build system
 
 : Maybe Kubernetes is managing deployment but Dancer provides and interface for developers.
 : Think dancer based jenkins like system.
@@ -597,7 +596,7 @@ Usage
 ################################################
 * Kubernetes
 
-What is it
+What is it?
 
 - Open source
 - Go
