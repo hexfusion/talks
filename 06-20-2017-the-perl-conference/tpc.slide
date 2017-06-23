@@ -47,8 +47,8 @@ https://github.com/hexfusion/talks
 
 *History*
 
-- Stubby Google's RPC backgone infrastructure.
-- 2015 Stubby open sourced as gRPC.
+- Stubby Google's RPC backgone infrastructure
+- 2015 Stubby open sourced as gRPC
 
 : Google was interested in adobting public standards such as SPDY, HTTP/2, and QUIC.
 : Stubby powered all of Google’s microservices interconnect for over a decade.
@@ -58,9 +58,9 @@ https://github.com/hexfusion/talks
 ################################################
 * RPC
 
-- Mechanism for making a procedure call (function) in another application of across the network.
-- Passes parameters and expects certain reults.
-- Data is typed.
+- Mechanism for making a procedure call (function) in another application of across the network
+- Passes parameters and expects certain results
+- Data is typed
 
 .background img/background_endpoint_grey.png
 ################################################
@@ -96,7 +96,10 @@ gRPC services are defined by protobuf files.
 		repeated string roles = 3;
 	}
 
-protoc --go_out=. *.proto
+
+Build example
+
+	protoc --go_out=. *.proto
 
 : Compiled by protoc
 
@@ -127,8 +130,8 @@ protoc --go_out=. *.proto
 - Distributed key value store
 - Fault toleranct leader election
 - Store data across a cluster of machines
-- Backbone for kubernetes
-: Stores all of the container meta data.
+- Backbone for Kubernetes
+: Stores all of the container meta data
 : each node had a data directory
 
 .background img/background_etcd_grey.png
@@ -136,8 +139,8 @@ protoc --go_out=. *.proto
 
 * etcd best use
 
-- storing small amounts of data, JSON, YAML, text
-- max storage 8GB
+- Storing small amounts of data, JSON, YAML, text
+- Max storage 8GB
 
 : all data needs to be replicated across all nodes
 
@@ -147,8 +150,8 @@ protoc --go_out=. *.proto
 
 What they learned.
 
-- directory style promotes poor usage
-- empty directories were wasteful
+- Directory style promotes poor usage
+- Empty directories were wasteful
 - JSON although fast by most standards can lead to chatty transactions on the wire.
 
 	# create dir
@@ -220,8 +223,8 @@ Goals
 
 Issues
 
-- v2 had robust JSON REST API
-- Not all languages have stable gRPC/protobuf support.
+- V2 had robust JSON REST API
+- Not all languages have stable gRPC/protobuf support
 
 : cough perl
 : v3 by it's design had focus on grpc.
@@ -233,10 +236,10 @@ Issues
 
 Solution grpc-gateway
 
-- protoc plugin
-- Rest API based on proto files.
-- Reverse proxy accepts JSON.
-- Converts to gRPC.
+- Protoc plugin
+- Rest API based on proto files
+- Reverse proxy accepts JSON
+- Converts to gRPC
 - Yuki Yugui Sonoda (yugui)
 
 .caption Shout out: [[https://github.com/yugui][github.com/yugui]]
@@ -248,7 +251,7 @@ Solution grpc-gateway
 
 : reads gRPC service definition
 : generates a reverse-proxy server
-: translates a RESTful JSON API into gRPC.
+: translates a RESTful JSON API into gRPC
 
 .image img/grpc-gateway.png _ 1000
 
@@ -364,7 +367,7 @@ Watch watches for events happening or that have happened.
 _Challenges_
 
 - Input and outputs are streams
-- AnyEvent::HTML
+- AnyEvent::HTTP
 
 .background img/background_etcd_grey.png
 ################################################
@@ -405,6 +408,8 @@ Txn processes multiple requests in a single transaction.
 - success: is a list of requests which will be applied when compare evaluates to true.
 
 - failure: is a list of requests which will be applied when compare evaluates to false.
+
+Logical representation in Perl.
 
 	If ( $key eq 'foo' and $rev == 1 ) {
 		success(\@$success_actions);
@@ -495,7 +500,8 @@ Example:
 	$etcd->role( { name => 'newrole' } )->add;
 
 	# give read permission to range
-	$etcd->role_perm( { name => 'newrole', key => 'foo1', range_end => 'foo99', permType =>'READ' } )->grant;
+	$etcd->role_perm(
+	  { name => 'newrole', key => 'foo1', range_end => 'foo99', permType =>'READ'} )->grant;
 
 	# attach role to user
 	$etcd->user_role( { user => 'testing', role => 'newrole' } )->grant;
@@ -522,10 +528,10 @@ Easy access to etcd api within Dancer.
 
 Possible use cases
 
-- Custom development ENV management.
-- Custom automated builds.
+- Custom development ENV management
+- Custom automated builds
 
-: Maybe kubernetes is managing deployment but Dancer provides and interface for developers.
+: Maybe Kubernetes is managing deployment but Dancer provides and interface for developers.
 : Think dancer based jenkins like system.
 
 
@@ -537,7 +543,7 @@ Possible use cases
 Custom Build/Testing Application
 
 - Jenkins, Java.. really?
-- Perl is the king of automation.
+- Perl is the king of automation!
 
 : Jenkins is great but we need it to run a few bash scripts?
 : testing etcd travis is free I need to ensure drives are SSD.
@@ -548,7 +554,7 @@ Custom Build/Testing Application
 * Dancer::Plugin::Etcd
 
 - Config file outlining tasks
-- Build logic to turn config into actions.
+- Create logic to turn config into actions
 - Travis?
 
 : Generic Docker base image with a little magic to orchestrate logic and config.
@@ -574,8 +580,7 @@ Usage
 
 shepherd allows round trip storage of your YAML configs using a docker like naming system.
 
-- maintains styling
-- maintains comments
+- Maintains whitespace and comments
 - EXPERIMENTAL ONLY
 
 Usage
@@ -635,7 +640,7 @@ Docker
 	# reuse docker deamon
 	eval $(minikube docker-env)
 
-	# will show all docker containers within kubernetes
+	# will show all docker containers within Kubernetes
 	docker ps
 
 	# build your docker file
